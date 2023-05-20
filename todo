@@ -1,0 +1,144 @@
+const readline = require('readline');
+
+function Task(description, dueDate, priority) {
+  this.description = description;
+  this.dueDate = dueDate;
+  this.priority = priority;
+  this.completed = false;
+}
+
+const tasks = [];
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function addTask() {
+  rl.question("Enter task description: ", description => {
+    rl.question("Enter task due date (DD-MM-YYYY): ", dueDate => {
+      rl.question("Enter task priority (1-5): ", priority => {
+        const task = new Task(description, dueDate, priority);
+        tasks.push(task);
+        console.log("Task added.");
+        askInput();
+      });
+    });
+  });
+}
+
+function listAllTasks() {
+  console.log("All tasks:");
+  tasks.forEach((task, index) => {
+    console.log(`${index + 1}) ${task.description} [${task.completed ? "Completed" : "Incomplete"}]`);
+  });
+  askInput();
+}
+
+function listCompletedTasks() {
+  console.log("Completed tasks:");
+  const completedTasks = tasks.filter(task => task.completed);
+  completedTasks.forEach((task, index) => {
+    console.log(`${index + 1}) ${task.description}`);
+  });
+  askInput();
+}
+
+function markTaskAsDone() {
+  rl.question("Enter the index of the task to mark as done: ", taskIndex => {
+    if (taskIndex >= 1 && taskIndex <= tasks.length) {
+      const task = tasks[taskIndex - 1];
+      task.completed = true;
+      console.log("Task marked as done.");
+    } else {
+      console.log("Invalid task index.");
+    }
+    askInput();
+  });
+}
+
+function deleteTask() {
+  rl.question("Enter the index of the task to delete: ", taskIndex => {
+    if (taskIndex >= 1 && taskIndex <= tasks.length) {
+      tasks.splice(taskIndex - 1, 1);
+      console.log("Task deleted.");
+    } else {
+      console.log("Invalid task index.");
+    }
+    askInput();
+  });
+}
+
+function sortTasksByDueDate() {
+  tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+  console.log("Tasks sorted by due date.");
+  askInput();
+}
+
+function sortTasksByPriority() {
+  tasks.sort((a, b) => a.priority - b.priority);
+  console.log("Tasks sorted by priority.");
+  askInput();
+}
+
+function clearAllTasks() {
+  tasks.length = 0;
+  console.log("All tasks cleared.");
+  askInput();
+}
+
+function askInput() {
+  rl.question("What's your choice? ", choice => {
+    switch (choice) {
+      case "1":
+        addTask();
+        break;
+      case "2":
+        listAllTasks();
+        break;
+      case "3":
+        listCompletedTasks();
+        break;
+      case "4":
+        markTaskAsDone();
+        break;
+      case "5":
+        deleteTask();
+        break;
+      case "6":
+        sortTasksByDueDate();
+        break;
+      case "7":
+        sortTasksByPriority();
+        break;
+      case "8":
+        clearAllTasks();
+        break;
+      case "9":
+        rl.close();
+        break;
+      default:
+        console.log("Invalid choice.");
+        askInput();
+    }
+  });
+}
+
+
+console.log("***************************");
+console.log("Welcome to JS TODO-APP");
+console.log("***************************");
+console.log("***************************");
+console.log("Select an action:");
+console.log("1) Add a new task");
+console.log("2) List all tasks");
+console.log("3) List completed tasks");
+console.log("4) Mark a task as done");
+console.log("5) Delete a task");
+console.log("6) Sort tasks by due date");
+console.log("7) Sort tasks by priority");
+console.log("8) Clear all tasks");
+console.log("9) Exit");
+console.log("***************************");
+
+askInput();
